@@ -1,13 +1,13 @@
 services:
   config-server:
     build: .
-    container_name: config-server
+    container_name: finwise-config-server
     ports:
-      - "9901:8080"
+      - "9901:9901"
     networks:
-      - wikiemploi-network
+      - finwise-network
 
 networks:
-  wikiemploi-network:
+  finwise-network:
     driver: bridge
 

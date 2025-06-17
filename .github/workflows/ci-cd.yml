@@ -38,39 +38,34 @@ jobs:
       - name: Build Spring Boot JAR
         run: mvn clean package
 
-      - name: Prepare Dockerfile context
-        run: |
-          cp target/*.jar finwise-config-server.jar
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
-
-      - name: Save Docker image to archive
-        run: |
-          docker save ${{ secrets.DOCKER_IMAGE_NAME }} | gzip > finwise-config-server.tar.gz
-
-      - name: Setup SSH
+      - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          
 
-      - name: Copy Docker image to remote server
-        run: |
-          scp -i ~/.ssh/id_rsa finwise-config-server.tar.gz ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_APP_DIR }}/finwise-config-server.tar.gz
+
+      - name: Copy files to remote server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          sources: "target/*.jar, docker-compose.yml, Dockerfile"
+          target: ${{ secrets.REMOTE_APP_DIR }}
 
       - name: Deploy container on remote server
-        run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script:
             cd ${{ secrets.REMOTE_APP_DIR }}
-            gunzip -f finwise-config-server.tar.gz
-            docker load < finwise-config-server.tar
-            docker stop finwise-config-server || true
-            docker rm finwise-config-server || true
-            docker run -d \
-              --name finwise-config-server \
-              -p 9901:8080 \
-              ${{ secrets.DOCKER_IMAGE_NAME }}
-          EOF
+            docker-compose down || true
+            docker-compose pull || true
+            docker-compose up --build -d
+            docker image prune -f
+            docker ps

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: api-gateway
+    name: finwise-api-gateway
       #security:
       # oauth2:
     #  resourceserver:
@@ -23,15 +23,15 @@ spring:
         id: activity-manager
         uri: lb://activity-manager
         predicates[0]: Path=/api/v1/activity-manager/**
-server:
-  port: 443
-  ssl:
-    enabled: true
-    key-alias: local_ssl
-    key-store: classpath:local-ssl.p12
-    key-store-type: PKCS12
-    key-password: qW_c!;zne"tvD1qGi?K]m("!4)Vbts>Q
-    key-store-password: ${server.ssl.key-password}
+#server:
+#  port: 443
+#  ssl:
+#    enabled: true
+#    key-alias: local_ssl
+#    key-store: classpath:local-ssl.p12
+#    key-store-type: PKCS12
+#    key-password: qW_c!;zne"tvD1qGi?K]m("!4)Vbts>Q
+#    key-store-password: ${server.ssl.key-password}
 
 eureka:
   client:

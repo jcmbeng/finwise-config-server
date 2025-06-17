@@ -10,4 +10,3 @@ services:
 networks:
   finwise-network:
     driver: bridge
-

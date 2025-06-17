@@ -56,16 +56,12 @@ jobs:
           source: "target/*.jar,docker-compose.yml,Dockerfile"
           target: ${{ secrets.REMOTE_APP_DIR }}
 
-      - name: Deploy container on remote server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script:
+
+      - name: Build and run container on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             cd ${{ secrets.REMOTE_APP_DIR }}
-            docker-compose down || true
-            docker-compose pull || true
-            docker-compose up --build -d
-            docker image prune -f
-            docker ps
+            docker build -t finwise-config-server:latest .
+            docker compose down
+            docker compose up -d
+          EOF

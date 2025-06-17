@@ -1,15 +1,16 @@
 name: Build and Deploy Config Server
 
-workflow_dispatch:
-  inputs:
-    environment:
-      description: 'Environment to deploy to (dev, prod)'
-      required: true
-      default: 'develop'
-    branch:
-      description: 'Branch to build'
-      required: false
-      default: 'main'
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (dev, prod)'
+        required: true
+        default: 'develop'
+      branch:
+        description: 'Branch to build'
+        required: false
+        default: 'main'
 
 #on:
 #  push:

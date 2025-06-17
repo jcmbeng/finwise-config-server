@@ -1,6 +1,9 @@
 name: Build and Deploy Config Server
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
     inputs:
       environment:

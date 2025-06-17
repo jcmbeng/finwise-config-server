@@ -1,0 +1,13 @@
+services:
+  config-server:
+    build: .
+    container_name: config-server
+    ports:
+      - "9901:8080"
+    networks:
+      - wikiemploi-network
+
+networks:
+  wikiemploi-network:
+    driver: bridge
+

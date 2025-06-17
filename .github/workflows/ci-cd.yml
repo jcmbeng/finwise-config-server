@@ -1,0 +1,72 @@
+name: Build and Deploy Config Server
+
+workflow_dispatch:
+  inputs:
+    environment:
+      description: 'Environment to deploy to (dev, prod)'
+      required: true
+      default: 'develop'
+    branch:
+      description: 'Branch to build'
+      required: false
+      default: 'main'
+
+#on:
+#  push:
+#    branches: [main]
+#  pull_request:
+#    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Spring Boot JAR
+        run: ./mvnw clean package -DskipTests
+
+      - name: Prepare Dockerfile context
+        run: |
+          cp target/*.jar finwise-config-server.jar
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_IMAGE_NAME }} .
+
+      - name: Save Docker image to archive
+        run: |
+          docker save ${{ secrets.DOCKER_IMAGE_NAME }} | gzip > finwise-config-server.tar.gz
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.REMOTE_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy Docker image to remote server
+        run: |
+          scp -i ~/.ssh/id_rsa finwise-config-server.tar.gz ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_APP_DIR }}/finwise-config-server.tar.gz
+
+      - name: Deploy container on remote server
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
+            cd ${{ secrets.REMOTE_APP_DIR }}
+            gunzip -f finwise-config-server.tar.gz
+            docker load < finwise-config-server.tar
+            docker stop finwise-config-server || true
+            docker rm finwise-config-server || true
+            docker run -d \
+              --name finwise-config-server \
+              -p 9901:8080 \
+              ${{ secrets.DOCKER_IMAGE_NAME }}
+          EOF

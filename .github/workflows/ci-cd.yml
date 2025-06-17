@@ -53,7 +53,7 @@ jobs:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          sources: "target/*.jar, docker-compose.yml, Dockerfile"
+          source: "target/*.jar,docker-compose.yml,Dockerfile"
           target: ${{ secrets.REMOTE_APP_DIR }}
 
       - name: Deploy container on remote server

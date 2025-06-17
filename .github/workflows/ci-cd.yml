@@ -61,7 +61,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.REMOTE_USER }}@${{ secrets.REMOTE_HOST }} << 'EOF'
             cd ${{ secrets.REMOTE_APP_DIR }}
-            docker build -t finwise-config-server:latest .
             docker compose down
             docker compose up -d
           EOF

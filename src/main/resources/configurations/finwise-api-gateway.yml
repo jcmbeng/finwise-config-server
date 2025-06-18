@@ -11,18 +11,11 @@ spring:
       discovery:
         locator:
           lower-case-service-id: true
-      routes[0]:
-        id: user-service
-        uri: lb://user-service
-        predicates[0]: Path=/api/v1/users/**
-      routes[1]:
-        id: cotisation-service
-        uri: lb://cotisation-service
-        predicates[0]: Path=/api/v1/cotisations/**
-      routes[2]:
-        id: activity-manager
-        uri: lb://activity-manager
-        predicates[0]: Path=/api/v1/activity-manager/**
+#      routes[0]:
+#        id: user-service
+#        uri: lb://user-service
+#        predicates[0]: Path=/api/v1/users/**
+
 server:
   port: 443
   ssl:

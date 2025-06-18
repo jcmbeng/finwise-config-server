@@ -1,12 +1,12 @@
 services:
   finwise:
     build: .
-    container_name: config-server
-    ports:
-      - "9901:9901"
     networks:
       - finwise-network
+    container_name: config-server
+ #   ports:
+ #     - "9901:8080"
 
 networks:
   finwise-network:
-    driver: bridge
+    external: true

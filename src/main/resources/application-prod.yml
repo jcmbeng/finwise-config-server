@@ -1,10 +1,4 @@
 spring:
-  profiles:
-    active: native
-  application:
-    name: finwise-config-server
-
-
   cloud:
     config:
       server:
@@ -15,5 +9,3 @@ server:
   error:
     whitelabel:
       enabled: false
-
-

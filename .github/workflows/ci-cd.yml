@@ -44,7 +44,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven
 
       - name: Build Spring Boot JAR
-        run: mvn clean package -Dspring.profiles=dev
+        run: mvn clean package -Dspring.profiles.active=dev
 
       - name: Set up SSH key
         run: |

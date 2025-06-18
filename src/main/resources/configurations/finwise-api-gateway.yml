@@ -4,6 +4,10 @@ spring:
       discovery:
         locator:
           lower-case-service-id: true
+      routes[0]:
+        id: user-service
+        uri: lb://user-service
+        predicates[0]: Path=/api/v1/users/**
 
 server:
   port: 443
@@ -15,12 +19,17 @@ server:
     key-password: qW_c!;zne"tvD1qGi?K]m("!4)Vbts>Q
     key-store-password: ${server.ssl.key-password}
 
+
 eureka:
+  instance:
+    hostname: discovery-server
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:9902/eureka/
+      defaultZone: http://${eureka.instance.hostname}:8080/eureka/
+
+
 
 management:
   tracing:

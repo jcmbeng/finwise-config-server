@@ -10,7 +10,7 @@ spring:
           search-locations: classpath:/configurations
 
 server:
-  port: 8080
+  port: 9901
   error:
     whitelabel:
       enabled: false

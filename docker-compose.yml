@@ -3,7 +3,7 @@ services:
     build: .
     container_name: config-server
     ports:
-      - "9901:8080"
+      - "9901:9901"
     networks:
       - finwise-network
 

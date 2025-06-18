@@ -7,5 +7,5 @@ eureka:
   instance:
     hostname: localhost
 #
-#server:
-#  port: 9902
+server:
+  port: 9902

@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/*.jar /app/finwise-config-server.jar
 
 # Exposer le port sur lequel l’application écoute
-EXPOSE 8080
+EXPOSE 9901
 
 # Commande pour exécuter l’application Spring Boot
 ENTRYPOINT ["java", "-jar", "/app/finwise-config-server.jar"]

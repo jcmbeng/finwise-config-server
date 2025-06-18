@@ -1,20 +1,9 @@
 spring:
-  application:
-    name: finwise-api-gateway
-      #security:
-      # oauth2:
-    #  resourceserver:
-    #   jwt:
-    #    issuer-uri: http://localhost:9090/realms/ethicpay-realm
   cloud:
     gateway:
       discovery:
         locator:
           lower-case-service-id: true
-#      routes[0]:
-#        id: user-service
-#        uri: lb://user-service
-#        predicates[0]: Path=/api/v1/users/**
 
 server:
   port: 443

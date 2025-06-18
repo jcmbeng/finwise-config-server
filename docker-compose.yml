@@ -10,3 +10,4 @@ services:
 networks:
   finwise-network:
     external: true
+    driver: bridge
